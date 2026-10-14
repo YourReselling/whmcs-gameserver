@@ -1,0 +1,1652 @@
+{
+  "gameserver": {
+    "slug": "gameserver",
+    "create": {
+      "method": "POST",
+      "path": "/products/gameserver",
+      "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:238",
+      "required_fields": [
+        "location_id",
+        "egg_id",
+        "name",
+        "cores",
+        "ram_mb",
+        "disk_gb",
+        "network_mode"
+      ],
+      "response_id_path": "data.id",
+      "body": {
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:rootserver_locations,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "egg_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:product_eggs,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 64,
+            "x-validation": [
+              "required",
+              "string",
+              "max:64"
+            ],
+            "x-validation-expressions": []
+          },
+          "cores": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64,
+            "x-validation": [
+              "required",
+              "integer",
+              "min:1",
+              "max:64"
+            ],
+            "x-validation-expressions": []
+          },
+          "ram_mb": {
+            "type": "integer",
+            "minimum": 512,
+            "maximum": 262144,
+            "x-validation": [
+              "required",
+              "integer",
+              "min:512",
+              "max:262144"
+            ],
+            "x-validation-expressions": []
+          },
+          "disk_gb": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 4000,
+            "x-validation": [
+              "required",
+              "integer",
+              "min:5",
+              "max:4000"
+            ],
+            "x-validation-expressions": []
+          },
+          "network_mode": {
+            "type": "string",
+            "enum": [
+              "shared_port",
+              "dedicated_ip"
+            ],
+            "x-validation": [
+              "required",
+              "in:shared_port,dedicated_ip"
+            ],
+            "x-validation-expressions": []
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": true,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "array"
+            ],
+            "x-validation-expressions": []
+          },
+          "extra_ports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "protocol": {
+                  "type": "string",
+                  "enum": [
+                    "tcp",
+                    "udp"
+                  ],
+                  "x-validation": [
+                    "required",
+                    "in:tcp,udp"
+                  ],
+                  "x-validation-expressions": []
+                }
+              },
+              "required": [
+                "protocol"
+              ]
+            },
+            "maxItems": 8,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "array",
+              "max:8"
+            ],
+            "x-validation-expressions": []
+          },
+          "subdomain_zone_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "uuid",
+              "exists:gameserver_subdomain_zones,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "subdomain": {
+            "type": "string",
+            "maxLength": 63,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "required_with:subdomain_zone_id",
+              "string",
+              "max:63"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "cores",
+          "disk_gb",
+          "egg_id",
+          "location_id",
+          "name",
+          "network_mode",
+          "ram_mb"
+        ]
+      },
+      "bodyRequired": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "gameservers:create"
+      ],
+      "responseMode": "json"
+    },
+    "termination": {
+      "method": "DELETE",
+      "path": "/products/gameserver/{server}",
+      "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:387",
+      "semantics": "terminate gameserver",
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "pathParameters": [
+        {
+          "name": "server",
+          "type": "string",
+          "description": "server route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "gameservers:delete"
+      ],
+      "responseMode": "json"
+    },
+    "suspend": null,
+    "unsuspend": null,
+    "notes": [
+      "network_mode shared_port or dedicated_ip",
+      "Egg-specific variables available from catalog; validate/quote before ordering",
+      "No suspend/unsuspend endpoint; stop/start are power operations"
+    ],
+    "displayName": "Gameserver",
+    "module": "yourresellinggameserver",
+    "show": {
+      "id": "GET /products/gameserver/{server}",
+      "group": "gameserver",
+      "name": "get",
+      "method": "GET",
+      "path": "/products/gameserver/{server}",
+      "summary": "Show gameserver",
+      "description": "",
+      "germanSummary": "Gameserver-Details",
+      "permissions": [
+        "gameservers:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "server",
+          "type": "string",
+          "description": "Gameserver ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:215",
+      "routeName": "api.gameservers.show"
+    },
+    "showDataPath": "data",
+    "activeStatuses": [
+      "running"
+    ],
+    "views": {
+      "get": {
+        "id": "GET /products/gameserver/{server}",
+        "group": "gameserver",
+        "name": "get",
+        "method": "GET",
+        "path": "/products/gameserver/{server}",
+        "summary": "Show gameserver",
+        "description": "",
+        "germanSummary": "Gameserver-Details",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:215",
+        "routeName": "api.gameservers.show"
+      },
+      "addonsIndex": {
+        "id": "GET /products/gameserver/{server}/addons",
+        "group": "gameserver",
+        "name": "addonsIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/addons",
+        "summary": "List installed plugins or mods",
+        "description": "",
+        "germanSummary": "Installierte Plugins/Mods",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:639",
+        "routeName": "api.gameservers.addons.index"
+      },
+      "backupsIndex": {
+        "id": "GET /products/gameserver/{server}/backups",
+        "group": "gameserver",
+        "name": "backupsIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/backups",
+        "summary": "List backups",
+        "description": "",
+        "germanSummary": "Backups auflisten",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1338",
+        "routeName": "api.gameservers.backups.index"
+      },
+      "console": {
+        "id": "GET /products/gameserver/{server}/console",
+        "group": "gameserver",
+        "name": "console",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/console",
+        "summary": "Open PTY console",
+        "description": "",
+        "germanSummary": "PTY-Konsole öffnen",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1098",
+        "routeName": "api.gameservers.console"
+      },
+      "databaseIndex": {
+        "id": "GET /products/gameserver/{server}/database",
+        "group": "gameserver",
+        "name": "databaseIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/database",
+        "summary": "List databases",
+        "description": "",
+        "germanSummary": "Datenbanken auflisten",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1361",
+        "routeName": "api.gameservers.database.index"
+      },
+      "fileShow": {
+        "id": "GET /products/gameserver/{server}/file",
+        "group": "gameserver",
+        "name": "fileShow",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/file",
+        "summary": "Read file",
+        "description": "",
+        "germanSummary": "Datei lesen",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {
+            "path": {}
+          },
+          "additionalProperties": true,
+          "required": []
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:883",
+        "routeName": "api.gameservers.file.show"
+      },
+      "files": {
+        "id": "GET /products/gameserver/{server}/files",
+        "group": "gameserver",
+        "name": "files",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/files",
+        "summary": "List files",
+        "description": "",
+        "germanSummary": "Dateien auflisten",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {
+            "path": {}
+          },
+          "additionalProperties": true,
+          "required": []
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:870",
+        "routeName": "api.gameservers.files"
+      },
+      "logs": {
+        "id": "GET /products/gameserver/{server}/logs",
+        "group": "gameserver",
+        "name": "logs",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/logs",
+        "summary": "Container logs",
+        "description": "",
+        "germanSummary": "Container-Logs",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [
+          {
+            "status": 200,
+            "description": "Plain logs and logs with ANSI SGR colors. Other terminal controls are removed. Render both as text, never as HTML.",
+            "germanDescription": "Klartext-Logs und Logs mit ANSI-SGR-Farben. Andere Terminal-Steuersequenzen werden entfernt. Beide Ausgaben als Text rendern, niemals als HTML.",
+            "schema": null,
+            "example": {
+              "success": true,
+              "data": {
+                "logs": "[INFO] Ready",
+                "logs_ansi": "\u001b[32m[INFO] Ready\u001b[0m"
+              }
+            },
+            "contentType": "application/json"
+          }
+        ],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:824",
+        "routeName": "api.gameservers.logs"
+      },
+      "playersIndex": {
+        "id": "GET /products/gameserver/{server}/players",
+        "group": "gameserver",
+        "name": "playersIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/players",
+        "summary": "List players",
+        "description": "",
+        "germanSummary": "Spieler auflisten",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:782",
+        "routeName": "api.gameservers.players.index"
+      },
+      "schedulesIndex": {
+        "id": "GET /products/gameserver/{server}/schedules",
+        "group": "gameserver",
+        "name": "schedulesIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/schedules",
+        "summary": "List schedules",
+        "description": "",
+        "germanSummary": "Zeitpläne auflisten",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1384",
+        "routeName": "api.gameservers.schedules.index"
+      },
+      "stats": {
+        "id": "GET /products/gameserver/{server}/stats",
+        "group": "gameserver",
+        "name": "stats",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/stats",
+        "summary": "Live stats",
+        "description": "",
+        "germanSummary": "Live-Statistiken",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:603",
+        "routeName": "api.gameservers.stats"
+      },
+      "statsHistory": {
+        "id": "GET /products/gameserver/{server}/stats/history",
+        "group": "gameserver",
+        "name": "statsHistory",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/stats/history",
+        "summary": "Historical resource stats",
+        "description": "",
+        "germanSummary": "Ressourcen-Verlauf",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "description": "hour, day, week or month",
+              "type": "string"
+            }
+          },
+          "additionalProperties": true,
+          "required": []
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:624",
+        "routeName": "api.gameservers.stats.history"
+      },
+      "variablesIndex": {
+        "id": "GET /products/gameserver/{server}/variables",
+        "group": "gameserver",
+        "name": "variablesIndex",
+        "method": "GET",
+        "path": "/products/gameserver/{server}/variables",
+        "summary": "Show server variables",
+        "description": "",
+        "germanSummary": "Server-Variablen anzeigen",
+        "permissions": [
+          "gameservers:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:550",
+        "routeName": "api.gameservers.variables.index"
+      }
+    },
+    "controls": {
+      "rename": {
+        "id": "PATCH /products/gameserver/{server}",
+        "group": "gameserver",
+        "name": "rename",
+        "method": "PATCH",
+        "path": "/products/gameserver/{server}",
+        "summary": "Rename gameserver",
+        "description": "",
+        "germanSummary": "Gameserver umbenennen",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "Gameserver ID"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "x-validation": [
+                "required",
+                "string",
+                "max:64"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "additionalProperties": true,
+          "required": [
+            "name"
+          ]
+        },
+        "bodyRequired": true,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:278",
+        "routeName": "api.gameservers.rename",
+        "label": "Umbenennen"
+      },
+      "backupsStore": {
+        "id": "POST /products/gameserver/{server}/backups",
+        "group": "gameserver",
+        "name": "backupsStore",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/backups",
+        "summary": "Create backup",
+        "description": "",
+        "germanSummary": "Backup erstellen",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1152",
+        "routeName": "api.gameservers.backups.store",
+        "label": "Backup erstellen"
+      },
+      "command": {
+        "id": "POST /products/gameserver/{server}/command",
+        "group": "gameserver",
+        "name": "command",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/command",
+        "summary": "Send console command",
+        "description": "",
+        "germanSummary": "Konsolenbefehl senden",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "maxLength": 2000,
+              "x-validation": [
+                "required",
+                "string",
+                "max:2000"
+              ],
+              "x-validation-expressions": []
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "console",
+                "exec"
+              ],
+              "nullable": true,
+              "x-validation": [
+                "nullable",
+                "in:console,exec"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "additionalProperties": true,
+          "required": [
+            "command"
+          ]
+        },
+        "bodyRequired": true,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:847",
+        "routeName": "api.gameservers.command",
+        "label": "Konsolenbefehl ausführen"
+      },
+      "playersAction": {
+        "id": "POST /products/gameserver/{server}/players",
+        "group": "gameserver",
+        "name": "playersAction",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/players",
+        "summary": "Kick, op, deop, ban or pardon a player",
+        "description": "",
+        "germanSummary": "Spieler kicken, oppen oder bannen",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "kick, op, deop, ban, pardon, whitelist or unwhitelist",
+              "enum": [
+                "kick",
+                "op",
+                "deop",
+                "ban",
+                "pardon",
+                "whitelist",
+                "unwhitelist"
+              ],
+              "x-validation": [
+                "required",
+                "in:kick,op,deop,ban,pardon,whitelist,unwhitelist"
+              ],
+              "x-validation-expressions": []
+            },
+            "player": {
+              "type": "string",
+              "description": "Player name",
+              "maxLength": 32,
+              "x-validation": [
+                "required",
+                "string",
+                "max:32"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "additionalProperties": true,
+          "required": [
+            "action",
+            "player"
+          ]
+        },
+        "bodyRequired": true,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:802",
+        "routeName": "api.gameservers.players.action",
+        "label": "Spieler verwalten"
+      },
+      "restart": {
+        "id": "POST /products/gameserver/{server}/restart",
+        "group": "gameserver",
+        "name": "restart",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/restart",
+        "summary": "Restart gameserver",
+        "description": "",
+        "germanSummary": "Gameserver neu starten",
+        "permissions": [
+          "gameservers:power"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:371",
+        "routeName": "api.gameservers.restart",
+        "label": "Neu starten"
+      },
+      "scan": {
+        "id": "POST /products/gameserver/{server}/scan",
+        "group": "gameserver",
+        "name": "scan",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/scan",
+        "summary": "Malware scan",
+        "description": "",
+        "germanSummary": "Malware-Scan",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1279",
+        "routeName": "api.gameservers.scan",
+        "label": "Sicherheitsprüfung starten"
+      },
+      "schedulesStore": {
+        "id": "POST /products/gameserver/{server}/schedules",
+        "group": "gameserver",
+        "name": "schedulesStore",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/schedules",
+        "summary": "Create schedule",
+        "description": "",
+        "germanSummary": "Zeitplan anlegen",
+        "permissions": [
+          "gameservers:update"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "backup",
+                "start",
+                "stop",
+                "restart",
+                "command"
+              ],
+              "x-validation": [
+                "required",
+                "in:backup,start,stop,restart,command"
+              ],
+              "x-validation-expressions": []
+            },
+            "cron": {
+              "type": "string",
+              "maxLength": 64,
+              "x-validation": [
+                "required",
+                "string",
+                "max:64"
+              ],
+              "x-validation-expressions": []
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "x-validation": [
+                "required",
+                "string",
+                "max:64"
+              ],
+              "x-validation-expressions": []
+            },
+            "payload": {
+              "type": "string",
+              "maxLength": 500,
+              "nullable": true,
+              "x-validation": [
+                "nullable",
+                "string",
+                "max:500"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "additionalProperties": true,
+          "required": [
+            "action",
+            "cron",
+            "name"
+          ]
+        },
+        "bodyRequired": true,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:1220",
+        "routeName": "api.gameservers.schedules.store",
+        "label": "Zeitplan erstellen"
+      },
+      "start": {
+        "id": "POST /products/gameserver/{server}/start",
+        "group": "gameserver",
+        "name": "start",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/start",
+        "summary": "Start gameserver",
+        "description": "",
+        "germanSummary": "Gameserver starten",
+        "permissions": [
+          "gameservers:power"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:359",
+        "routeName": "api.gameservers.start",
+        "label": "Starten"
+      },
+      "stop": {
+        "id": "POST /products/gameserver/{server}/stop",
+        "group": "gameserver",
+        "name": "stop",
+        "method": "POST",
+        "path": "/products/gameserver/{server}/stop",
+        "summary": "Stop gameserver",
+        "description": "",
+        "germanSummary": "Gameserver stoppen",
+        "permissions": [
+          "gameservers:power"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "server",
+            "type": "string",
+            "description": "server route parameter"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Gameserver/GameserverApiController.php:365",
+        "routeName": "api.gameservers.stop",
+        "label": "Stoppen"
+      }
+    },
+    "customerFields": [
+      "name"
+    ],
+    "fields": [
+      {
+        "name": "cores",
+        "path": false,
+        "required": true,
+        "label": "CPU-Kerne",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 64,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:1",
+          "max:64"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "disk_gb",
+        "path": false,
+        "required": true,
+        "label": "Speicher (GB)",
+        "type": "integer",
+        "minimum": 5,
+        "maximum": 4000,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:5",
+          "max:4000"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "egg_id",
+        "path": false,
+        "required": true,
+        "label": "Laufzeit-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:product_eggs,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "location_id",
+        "path": false,
+        "required": true,
+        "label": "Standort-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:rootserver_locations,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "name",
+        "path": false,
+        "required": true,
+        "label": "Name",
+        "type": "string",
+        "maxLength": 64,
+        "x-validation": [
+          "required",
+          "string",
+          "max:64"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "network_mode",
+        "path": false,
+        "required": true,
+        "label": "Netzwerkmodus",
+        "type": "string",
+        "enum": [
+          "shared_port",
+          "dedicated_ip"
+        ],
+        "x-validation": [
+          "required",
+          "in:shared_port,dedicated_ip"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "ram_mb",
+        "path": false,
+        "required": true,
+        "label": "Arbeitsspeicher (MB)",
+        "type": "integer",
+        "minimum": 512,
+        "maximum": 262144,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:512",
+          "max:262144"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "extra_ports",
+        "path": false,
+        "required": false,
+        "label": "extra_ports",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": [
+                "tcp",
+                "udp"
+              ],
+              "x-validation": [
+                "required",
+                "in:tcp,udp"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "required": [
+            "protocol"
+          ]
+        },
+        "maxItems": 8,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "array",
+          "max:8"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "subdomain",
+        "path": false,
+        "required": false,
+        "label": "subdomain",
+        "type": "string",
+        "maxLength": 63,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "required_with:subdomain_zone_id",
+          "string",
+          "max:63"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "subdomain_zone_id",
+        "path": false,
+        "required": false,
+        "label": "subdomain_zone_id",
+        "type": "string",
+        "format": "uuid",
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "uuid",
+          "exists:gameserver_subdomain_zones,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "variables",
+        "path": false,
+        "required": false,
+        "label": "variables",
+        "type": "object",
+        "additionalProperties": true,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "array"
+        ],
+        "x-validation-expressions": []
+      }
+    ],
+    "configFields": [
+      {
+        "name": "cores",
+        "path": false,
+        "required": true,
+        "label": "CPU-Kerne",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 64,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:1",
+          "max:64"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "disk_gb",
+        "path": false,
+        "required": true,
+        "label": "Speicher (GB)",
+        "type": "integer",
+        "minimum": 5,
+        "maximum": 4000,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:5",
+          "max:4000"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "egg_id",
+        "path": false,
+        "required": true,
+        "label": "Laufzeit-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:product_eggs,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "location_id",
+        "path": false,
+        "required": true,
+        "label": "Standort-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:rootserver_locations,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "name",
+        "path": false,
+        "required": true,
+        "label": "Name",
+        "type": "string",
+        "maxLength": 64,
+        "x-validation": [
+          "required",
+          "string",
+          "max:64"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "network_mode",
+        "path": false,
+        "required": true,
+        "label": "Netzwerkmodus",
+        "type": "string",
+        "enum": [
+          "shared_port",
+          "dedicated_ip"
+        ],
+        "x-validation": [
+          "required",
+          "in:shared_port,dedicated_ip"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "ram_mb",
+        "path": false,
+        "required": true,
+        "label": "Arbeitsspeicher (MB)",
+        "type": "integer",
+        "minimum": 512,
+        "maximum": 262144,
+        "x-validation": [
+          "required",
+          "integer",
+          "min:512",
+          "max:262144"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "extra_ports",
+        "path": false,
+        "required": false,
+        "label": "extra_ports",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": [
+                "tcp",
+                "udp"
+              ],
+              "x-validation": [
+                "required",
+                "in:tcp,udp"
+              ],
+              "x-validation-expressions": []
+            }
+          },
+          "required": [
+            "protocol"
+          ]
+        },
+        "maxItems": 8,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "array",
+          "max:8"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "subdomain",
+        "path": false,
+        "required": false,
+        "label": "subdomain",
+        "type": "string",
+        "maxLength": 63,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "required_with:subdomain_zone_id",
+          "string",
+          "max:63"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "subdomain_zone_id",
+        "path": false,
+        "required": false,
+        "label": "subdomain_zone_id",
+        "type": "string",
+        "format": "uuid",
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "uuid",
+          "exists:gameserver_subdomain_zones,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "variables",
+        "path": false,
+        "required": false,
+        "label": "variables",
+        "type": "object",
+        "additionalProperties": true,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "array"
+        ],
+        "x-validation-expressions": []
+      }
+    ]
+  }
+}
